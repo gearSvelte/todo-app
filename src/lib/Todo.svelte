@@ -10,7 +10,7 @@
 <li class="todo" transition:fade>
   <input
     type="checkbox"
-    bind:checked={todo.done}
+    checked={todo.done}
     on:change={() => dispatch('done')}
   />
   <span class={'done-' + todo.done}>{todo.text}</span>

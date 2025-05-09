@@ -4,37 +4,36 @@ import { Todos } from '../data';
 import type { ITodo } from '../types';
 import { TodoModel } from '../models';
 
-let todos: ITodo[] = Todos;
-
 /** Добавляем новую задачу */
 function addTodo(task: string, completed?: boolean): void {
-  const newTodo = new TodoModel(nanoid(), task, completed);
-  todos = [...todos, newTodo];
+  Todos.update((todos) => [...todos, new TodoModel(nanoid(), task, completed)]);
 }
 
 /** Удаляем задачу по id */
 function deleteTodo(id: string): void {
-  todos = todos.filter((todo: ITodo) => todo.id !== id);
+  Todos.update((todos) => todos.filter((todo) => todo.id !== id));
 }
 
 /** Оставляем только незавершенные задачи */
 function archiveCompletedTodos(): void {
-  todos = todos.filter((todo: ITodo) => !todo.done);
+  Todos.update((todos) => todos.filter((todo) => !todo.done));
 }
 
+/** Помечаем задачу как завершенную или не завершенную */
 function toggleTodoAsCompleted(todoCompleted: ITodo): void {
   const { id } = todoCompleted;
-  todos = todos.map((todo: ITodo) =>
-    todo.id === id ? { ...todo, done: !todo.done } : todo,
-  );
+
+  Todos.update((todos) => {
+    const newTodos = todos.map((todo) =>
+      todo.id === id ? { ...todo, done: !todo.done } : todo,
+    );
+
+    return newTodos;
+  });
 }
 
-function uncompletedTodosCount(): number {
-  return todos.filter((todo: ITodo) => !todo.done).length;
-}
-
-function getAllTodos(): ITodo[] {
-  return todos;
+function uncompletedTodosCount(todos: ITodo[]): number {
+  return todos.filter((todo) => !todo.done).length;
 }
 
 export {
@@ -43,5 +42,4 @@ export {
   archiveCompletedTodos,
   toggleTodoAsCompleted,
   uncompletedTodosCount,
-  getAllTodos,
 };

@@ -1,15 +1,18 @@
 <script lang="ts">
   import Todo from './Todo.svelte';
-  import { Todos as todos } from '../data';
+  import { Todos } from '../data';
   import {
-    getAllTodos,
     archiveCompletedTodos,
-    uncompletedTodosCount,
     deleteTodo,
     toggleTodoAsCompleted,
+    addTodo,
+    uncompletedTodosCount,
   } from '../helpers';
 
-  $: message = `${uncompletedTodosCount()} of ${getAllTodos().length} remaining.`;
+  let task = '';
+
+  $: todos = $Todos;
+  $: message = `${uncompletedTodosCount(todos)} of ${todos.length} remaining.`;
 </script>
 
 <div>
@@ -20,7 +23,17 @@
       >archive completed</button
     >
   </div>
-  <form on:submit|preventDefault></form>
+  <form on:submit|preventDefault>
+    <input type="text" placeholder="enter new task here" bind:value={task} />
+    <button
+      disabled={!task}
+      type="submit"
+      on:click={() => {
+        addTodo(task);
+        task = '';
+      }}>add task</button
+    >
+  </form>
   <ul>
     {#each todos as todo}
       <Todo
