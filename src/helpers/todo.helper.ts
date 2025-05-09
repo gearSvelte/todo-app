@@ -22,16 +22,17 @@ function archiveCompletedTodos(): void {
 /** Помечаем задачу как завершенную или не завершенную */
 function toggleTodoAsCompleted(todoCompleted: ITodo): void {
   const { id } = todoCompleted;
-
-  Todos.update((todos) => {
-    const newTodos = todos.map((todo) =>
-      todo.id === id ? { ...todo, done: !todo.done } : todo,
-    );
-
-    return newTodos;
-  });
+  Todos.update((todos) =>
+    todos.map((todo) => {
+      if (todo.id === id) {
+        return new TodoModel(todo.id, todo.text, !todo.done);
+      }
+      return todo;
+    }),
+  );
 }
 
+/** Возвращаем число незавершенных задач */
 function uncompletedTodosCount(todos: ITodo[]): number {
   return todos.filter((todo) => !todo.done).length;
 }
